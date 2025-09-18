@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ganpati DJ Lighting Show</title>
+<style>
+  :root{
+    --bg1:#06060b; --bg2:#0b0520;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));font-family:system-ui,Arial}
+  .stage{position:relative;width:100%;height:100%;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+/* ----- colored moving beams (behind idol) ----- */
+  .beams{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;z-index:1}
+  .beam{
+    position:absolute;
+    bottom:-20vh;
+    width:40vw;height:70vh;
+    transform-origin:bottom center;
+    opacity:0.38;
+    filter:blur(12px) saturate(1.2);
+    border-radius:40%/50%;
+  }
+  .beam::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;
+    background:radial-gradient(60% 80% at 50% 100%, rgba(255,255,255,0.25), transparent 45%);
+    mix-blend-mode:screen;opacity:0.9;
+  }
+  .b1{left:10%;transform:rotate(-28deg) scaleX(1.05); background:linear-gradient(120deg, rgba(18,255,153,0.18), rgba(0,0,0,0)); animation:sw1 9s ease-in-out infinite}
+  .b2{left:28%;transform:rotate(-10deg); background:linear-gradient(120deg, rgba(0,183,255,0.16), rgba(0,0,0,0)); animation:sw2 10.5s ease-in-out infinite}
+  .b3{left:46%;transform:rotate(6deg); background:linear-gradient(120deg, rgba(142,77,255,0.16), rgba(0,0,0,0)); animation:sw3 8.6s ease-in-out infinite}
+  .b4{left:64%;transform:rotate(20deg); background:linear-gradient(120deg, rgba(255,100,180,0.14), rgba(0,0,0,0)); animation:sw2 11.2s ease-in-out infinite}
+  .b5{left:80%;transform:rotate(35deg); background:linear-gradient(120deg, rgba(255,220,92,0.12), rgba(0,0,0,0)); animation:sw1 12s ease-in-out infinite}
+
+  @keyframes sw1{0%{transform:translateX(-6vw) rotate(-28deg)}50%{transform:translateX(6vw) rotate(8deg)}100%{transform:translateX(-6vw) rotate(-28deg)}}
+  @keyframes sw2{0%{transform:translateX(-4vw) rotate(-12deg)}50%{transform:translateX(4vw) rotate(12deg)}100%{transform:translateX(-4vw) rotate(-12deg)}}
+  @keyframes sw3{0%{transform:translateX(-5vw) rotate(3deg)}50%{transform:translateX(5vw) rotate(-10deg)}100%{transform:translateX(-5vw) rotate(3deg)}}
+
+/* ----- center idol (big) ----- */
+  .idol-wrap{position:relative;z-index:6;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .idol{
+    width:min(60vmin,880px);
+    height:auto;
+    display:block;
+    filter:drop-shadow(0 30px 50px rgba(0,0,0,0.6)) saturate(1.05);
+    transition:filter .4s ease;
+  }
+
+/* subtle breathing halo behind idol */
+  .halo{
+    position:absolute;z-index:5;pointer-events:none;
+    width:78vmin;height:78vmin;border-radius:50%;
+    background:radial-gradient(circle at 50% 45%, rgba(255,240,200,0.12) 0%, rgba(255,240,200,0.06) 12%, transparent 45%);
+    transform:translateY(2vmin);
+    filter:blur(26px) contrast(1.05);
+  }
+
+/* ----- lightning SVG layer ----- */
+  svg.lightning{position:absolute;inset:0;z-index:3;pointer-events:none}
+
+/* bolt style via class .bolt (stroke set dynamically) */
+  .bolt{stroke-linecap:round;stroke-linejoin:round;fill:none;stroke-width:2;stroke-dasharray:800;stroke-dashoffset:800;filter:drop-shadow(0 0 10px rgba(255,255,255,0.12))}
+
+/* ----- sparks (gold) that fall after bolt ----- */
+  .sparks{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+  .spark{position:absolute;width:2px;height:12px;border-radius:2px;background:linear-gradient(180deg,#fff,#ffd36b);filter:drop-shadow(0 0 6px rgba(255,220,140,0.7));opacity:1;transform-origin:center}
+
+/* ----- confetti on top ----- */
+  .confetti{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}
+  .paper{position:absolute;width:10px;height:14px;border-radius:2px;will-change:transform,opacity;}
+
+/* slight vignette on top */
+  .vignette{position:absolute;inset:0;z-index:9;pointer-events:none;background:radial-gradient(60% 50% at 50% 35%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.22) 40%, rgba(0,0,0,0.6) 100%);}
+
+/* tiny control hints (hidden but available) */
+  .hint{position:absolute;left:10px;bottom:8px;color:#fff;opacity:.06;font-size:12px;z-index:10}
+
+/* responsive */
+  @media (max-width:600px){
+    .idol{width:86vmin}
+    .halo{width:110vmin;height:110vmin}
+  }
+</style>
+</head>
+<body>
+  <div class="stage" role="application" aria-label="Ganpati DJ lighting show">
+    <div class="beams" aria-hidden="true">
+      <div class="beam b1"></div>
+      <div class="beam b2"></div>
+      <div class="beam b3"></div>
+      <div class="beam b4"></div>
+      <div class="beam b5"></div>
+    </div>
+
+    <svg class="lightning" id="lightning" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    <div class="halo" aria-hidden="true"></div>
+
+    <div class="idol-wrap">
+      <!-- place transparent PNG here named ganpati.png -->
+      <img id="idol" class="idol" src="ganpati.png" alt="Ganpati"/>
+    </div>
+
+    <div class="sparks" id="sparks"></div>
+    <div class="confetti" id="confetti"></div>
+
+    <div class="vignette"></div>
+    <div class="hint">Lighting: multi-color • bolts every few seconds • confetti smooth</div>
+  </div>
+
+<script>
+/* ---------- config ---------- */
+const BOLT_INTERVAL_MIN = 2500; // min ms between bolts
+const BOLT_INTERVAL_MAX = 7000; // max ms between bolts
+const BOLT_COLORS = ['#00ff9d','#00b7ff','#ffffff','#ff66c4','#ffd36b','#8e4dff','#7effb8'];
+const CONFETTI_COLORS = ['#ffdd57','#ffd6a5','#9be7ff','#8bf1a7','#ffd3f8','#d4bfff','#b7f0ff','#ff6a8a'];
+const SPARK_COUNT_RANGE = [18,36];
+
+/* ---------- util ---------- */
+const rand = (a,b)=>Math.random()*(b-a)+a;
+const svg = document.getElementById('lightning');
+function fitSVG(){ svg.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`); }
+window.addEventListener('resize', fitSVG); fitSVG();
+
+/* ---------- lightning bolt generator ---------- */
+function makeBolt(){
+  const w=window.innerWidth, h=window.innerHeight;
+  const startX = rand(w*0.15, w*0.85);
+  let x=startX, y=-60;
+  const segs = Math.floor(rand(7,13));
+  const pts=[];
+  for(let i=0;i<segs;i++){
+    y += rand(h/(segs+1)*0.6, h/(segs+1)*1.3);
+    x += rand(-w*0.06, w*0.06);
+    pts.push([x,y]);
+  }
+  const endX = x + rand(-40,40), endY = h*1.02;
+  let d = `M ${startX} -80`;
+  for(const [px,py] of pts) d += ` L ${px} ${py}`;
+  d += ` L ${endX} ${endY}`;
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d',d);
+  const color = BOLT_COLORS[Math.floor(rand(0,BOLT_COLORS.length))];
+  path.setAttribute('stroke',color);
+  path.setAttribute('class','bolt');
+  path.style.strokeWidth = rand(1.2,3.2);
+  path.style.strokeDasharray = 800;
+  path.style.strokeDashoffset = 800;
+  path.style.filter = `drop-shadow(0 0 12px ${color}) drop-shadow(0 0 26px rgba(255,255,255,0.03))`;
+  svg.appendChild(path);
+
+  // branches
+  const branches = Math.floor(rand(1,4));
+  for(let b=0;b<branches;b++){
+    const idx = Math.floor(rand(2, pts.length-2));
+    const [bx,by] = pts[idx];
+    const bx2 = bx + rand(-140,140);
+    const by2 = by + rand(60,240);
+    const d2 = `M ${bx} ${by} L ${bx2} ${by2}`;
+    const p2 = document.createElementNS('http://www.w3.org/2000/svg','path');
+    p2.setAttribute('d', d2);
+    const c2 = BOLT_COLORS[Math.floor(rand(0,BOLT_COLORS.length))];
+    p2.setAttribute('stroke', c2);
+    p2.setAttribute('class', 'bolt');
+    p2.style.strokeWidth = rand(0.8,1.6);
+    p2.style.filter = `drop-shadow(0 0 8px ${c2})`;
+    svg.appendChild(p2);
+  }
+
+  // animate draw
+  requestAnimationFrame(()=>{
+    path.style.transition = 'stroke-dashoffset 180ms linear';
+    path.style.strokeDashoffset = 0;
+    svg.querySelectorAll('.bolt').forEach(p=>{
+      p.style.transition = 'stroke-dashoffset 180ms linear';
+      p.style.strokeDashoffset = 0;
+    });
+  });
+
+  // subtle flash (behind idol)
+  const flash = document.createElement('div');
+  flash.style.position='absolute';
+  flash.style.inset='0';
+  flash.style.zIndex='2';
+  flash.style.pointerEvents='none';
+  flash.style.background = `radial-gradient(circle, rgba(255,255,255,0.9), rgba(255,255,255,0) 40%)`;
+  flash.style.opacity='0';
+  document.querySelector('.stage').appendChild(flash);
+  setTimeout(()=>{ flash.style.transition='opacity 140ms linear'; flash.style.opacity='0.85'; }, 10);
+  setTimeout(()=>{ flash.style.opacity='0'; setTimeout(()=>flash.remove(),220); }, 180);
+
+  // spawn gold sparks
+  spawnSparks();
+
+  // cleanup bolts
+  setTimeout(()=>{ svg.querySelectorAll('.bolt').forEach(n=>n.remove()); }, 1200);
+}
+
+/* ---------- sparks (gold paper glitter) ---------- */
+const sparksRoot = document.getElementById('sparks');
+function spawnSparks(){
+  const cnt = Math.floor(rand(SPARK_COUNT_RANGE[0], SPARK_COUNT_RANGE[1]));
+  for(let i=0;i<cnt;i++){
+    const el = document.createElement('div');
+    el.className='spark';
+    el.style.left = rand(10,90)+'vw';
+    el.style.top  = rand(-6,12)+'vh';
+    el.style.height = rand(8,22)+'px';
+    el.style.opacity = 1;
+    el.style.transform = `translateY(0) rotate(${rand(0,360)}deg)`;
+    sparksRoot.appendChild(el);
+    // animate down
+    requestAnimationFrame(()=>{ el.style.transition = `transform ${rand(700,1400)}ms cubic-bezier(.2,.8,.2,1), opacity ${rand(700,1400)}ms linear`; el.style.transform = `translateY(${rand(50,120)}vh) rotate(${rand(60,720)}deg)`; el.style.opacity='0'; });
+    setTimeout(()=>el.remove(), 1600);
+  }
+}
+
+/* ---------- confetti continuous ---------- */
+const confettiRoot = document.getElementById('confetti');
+function spawnConfetto(){
+  const el = document.createElement('div');
+  el.className='paper';
+  const size = Math.round(rand(6,14));
+  el.style.width = size+'px';
+  el.style.height = Math.round(size*1.3)+'px';
+  el.style.left = rand(0,100)+'%';
+  el.style.top = '-6%';
+  el.style.background = CONFETTI_COLORS[Math.floor(rand(0,CONFETTI_COLORS.length))];
+  el.style.opacity = 0.98;
+  el.style.borderRadius = '2px';
+  el.style.filter = 'drop-shadow(0 0 6px rgba(0,0,0,0.15))';
+  confettiRoot.appendChild(el);
+
+  const duration = rand(3800,8200);
+  const drift = rand(-12,12);
+  const rotateTo = rand(360,1440);
+  el.animate([
+    { transform: `translateY(0vh) translateX(0vw) rotate(0deg)`, opacity:1 },
+    { transform: `translateY(${rand(60,120)}vh) translateX(${drift}vw) rotate(${rotateTo}deg)`, opacity:0.95 }
+  ], { duration: duration, easing: 'cubic-bezier(.2,.7,.2,1)' });
+  setTimeout(()=>el.remove(), duration+120);
+}
+
+/* spawn confetti moderately */
+let confInterval = setInterval(spawnConfetto, 140);
+
+/* ---------- loop bolts at random intervals ---------- */
+let boltTimeout;
+function scheduleBolt(){
+  const ms = Math.floor(rand(BOLT_INTERVAL_MIN, BOLT_INTERVAL_MAX));
+  boltTimeout = setTimeout(()=>{ makeBolt(); scheduleBolt(); }, ms);
+}
+// start
+scheduleBolt();
+
+/* small demo: occasional quick rapid flashes (like DJ strobe) */
+setInterval(()=>{
+  if(Math.random() < 0.12) {
+    // mini rapid burst (2-3 quick bolts)
+    const bursts = Math.floor(rand(1,3));z
+    for(let i=0;i<bursts;i++) setTimeout(makeBolt, i*90 + Math.random()*70);
+  }
+}, 2200);
+
+/* cleanup when page hidden */
+window.addEventListener('pagehide', ()=>{ clearTimeout(boltTimeout); clearInterval(confInterval); });
+
+/* if image missing, show console hint */
+const idol = document.getElementById('idol');
+idol.addEventListener('error', ()=>{ console.warn('Place a transparent PNG named "ganpati.png" in same folder'); });
+</script>
+</body>
+</html>

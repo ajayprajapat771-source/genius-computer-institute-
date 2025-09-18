@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Genius Computer Institute</title>
+  <link rel="stylesheet" href="A.css">
+</head>
+<body>
+  <div class="container">
+ 
+  <!-- Header -->
+  <div class="box">
+    <p>Genius Computer Institute</p>
+    <p>Open this Sing</p>
+  </div>
+
+  <!-- Navigation -->
+  <div class="L-box">
+    <a href="insert.html">Insert</a>
+    <a href="GeniusWebside.html">Home</a>  
+    <a href="color.html">Sign</a>
+  </div>
+
+  <!-- Sign-in Form -->
+  <div class="form-container">
+    <form class="form" id="signinForm">
+      <label for="name">Enter your Name</label><br>
+      <input type="text" id="name" name="name" placeholder="Enter Name"><br><br>
+
+      <label for="email">Enter your Email</label><br>
+      <input type="email" id="email" name="email" placeholder="Enter Email"><br><br>
+
+      <label for="pass">Enter your Password</label><br>
+      <input type="password" id="pass" name="pass" placeholder="Enter Password"><br><br>
+
+      <button class="botton" type="submit">Submit</button>
+      <p id="msg" style="color:red; font-size:16px; margin-top:10px;"></p>
+    </form>
+  </div>
+  <div class="footer-box">
+    <u><P>Name   : Ajay Prajapat Sir</P>
+    <p>Mob.No : 6261370529</p>
+    <P>Name   : Ajay Prajapat Sir</P>
+    <p>ADDRES :  SUNSHIN TOWER 2ND FLOR TEEN BATTI CHORHA FREEGANJ UJJAIN (.M.P)</p></u>
+    
+  <script>
+    // Demo credentials (practice only)
+    const VALID_EMAIL = "anshtheking@gmail.com";
+    const VALID_PASS = "😎$Paisa$😎";
+
+    document.getElementById("signinForm").addEventListener("submit", function(e){
+      e.preventDefault(); // form reload na ho
+
+      const email = document.getElementById("email").value.trim();
+      const pass = document.getElementById("pass").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const msg = document.getElementById("msg");
+
+      if(!name || !email || !pass){
+        msg.textContent = "⚠️ Please fill all fields!";
+        return;
+      }
+
+      if(email === VALID_EMAIL && pass === VALID_PASS){
+        msg.style.color = "green";
+        msg.textContent = "✅ Login Successful! Welcome " + name;
+      } else {
+        msg.style.color = "red";
+        msg.textContent = "❌ Wrong email or password!";
+      }
+    });
+  </script>
+  </div></body>
+</html>

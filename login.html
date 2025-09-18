@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Genius Computer Institute</title>
+<style>
+/* Full page styling */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* Header box */
+.header-box {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 30px;
+  background: #111;
+  border-radius: 15px;
+  position: relative;
+  box-shadow: 0 0 20px rgb(209, 209, 229);
+  text-align: center;
+}
+.header-box img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  border: 2px solid #00f;
+}
+.header-box h1 {
+  font-size: 36px;
+  margin: 0;
+  text-shadow: 0 0 10px #00f;
+}
+.nav {
+  margin-top: 40px;
+}
+.nav span {
+  display: inline-block;
+  margin: 0 15px;
+  padding: 12px 25px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-weight: bold;
+  transition: 0.4s;
+  box-shadow: 0 0 5px #00f;
+}
+.nav span:hover {
+  box-shadow: 0 0 25px #0ff, 0 0 50px #0ff inset;
+  text-shadow: 0 0 10px #0ff;
+}
+
+/* Course list */
+.course-list {
+  display: none;
+  margin-top: 25px;
+  text-align: left;
+  background: #111;
+  border: 1px solid #0ff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 15px #0ff;
+}
+.course-list div {
+  padding: 10px 0;
+  border-bottom: 1px solid #0ff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.course-list div:hover {
+  text-shadow: 0 0 10px #0ff;
+  transform: scale(1.02);
+}
+
+/* Black boxes for courses */
+.black-box {
+  background: #111;
+  color: #0ff;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #0ff inset;
+}
+.black-box h2 {
+  margin-top: 0;
+  font-size: 28px;
+  text-shadow: 0 0 10px #0ff;
+}
+.black-box div {
+  margin-top: 15px;
+  padding: 8px;
+  border-bottom: 1px solid #0ff;
+  cursor: pointer;
+}
+.black-box div:hover {
+  transform: scale(1.02);
+  text-shadow: 0 0 10px #0ff;
+}
+
+/* Footer note */
+footer {
+  text-align: center;
+  margin: 50px 0;
+  font-size: 20px;
+  color: #0ff;
+}
+</style>
+</head>
+<body>
+
+<!-- Header Box -->
+<div class="header-box">
+  <img src="ganesh_files/logo.png" alt="Logo">
+  <h1>GENIUS COMPUTER INSTITUTE</h1>
+  <div class="nav">
+    <span>Home</span>
+    <span>About</span>
+    <span onclick="toggleCourses()">Choose Your Course</span>
+  </div>
+  <div class="course-list" id="courseList">
+    <div>EM-1 COMPUTER FUNDAMENTALS</div>
+    <div>PC PACKAGES (WORD, EXCEL, POWERPOINT)</div>
+    <!-- Add more courses here -->
+  </div>
+</div>
+
+<!-- Black Box 1 -->
+<div class="black-box">
+  <h2>POST GRADUATE DIPLOMA IN COMPUTER APPLICATION (PGDCA)</h2>
+  <div>EM-2 (Your Course Placeholder)</div>
+</div>
+
+<!-- Black Box 2 -->
+<div class="black-box">
+  <h2> <b>(EM - 1)  </b>DIPLOMA IN COMPUTER APPLICATION (DCA)</h2>
+   <div> -Computer Fundamentals</div> 
+   <div> -Pc Packages (word,Excel,Power Point)</div>
+    <div> -Data Base Using Foxpro</div>
+      <div> -Ms Access</div>
+  </div>
+</div>
+
+<footer>All Courses Updated - Genius Computer Institute</footer>
+
+<script>
+function toggleCourses(){
+  const list = document.getElementById('courseList');
+  list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+}
+</script>
+
+</body>
+</html>
